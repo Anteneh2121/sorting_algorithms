@@ -1,83 +1,61 @@
 #include "sort.h"
 
 /**
- * _swap - Swaps two nodes of doubly linked list
+ * len_list - returns the length of a linked list
+ * @h: pointer to the list
  *
- * @node: node base to change
- * @list: double link list head
- *
- * Return: No Return
+ * Return: length of list
  */
-void _swap(listint_t **node, listint_t **list)
+int len_list(listint_t *h)
 {
-	listint_t *tmp = *node, *tmp2, *tmp3;
+	int len = 0;
 
-	if (!(*node)->prev)
-		*list = (*node)->next;
-
-	tmp = tmp3 = *node;
-	tmp2 = tmp->next;
-
-	tmp->next = tmp2->next;
-	tmp3 = tmp->prev;
-	tmp->prev = tmp2;
-	tmp2->next = tmp;
-	tmp2->prev = tmp3;
-
-	if (tmp2->prev)
-		tmp2->prev->next = tmp2;
-
-
-	if (tmp->next)
-		tmp->next->prev = tmp;
-
-	*node = tmp2;
-
+	while (h)
+	{
+		len++;
+		h = h->next;
+	}
+	return (len);
 }
+
 /**
- * insertion_sort_list - sorts a doubly linked list of integers
- * in ascending order using the Insertion sort algorithm
- *
- * @list: doubly linked list
- *
- * Return: No Return
+ * insertion_sort_list - sorts a linked list with the Insert Sort algorithm
+ * @list: double pointer to the list to sort
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t  *head, *tback, *aux;
+	listint_t *curr = NULL, *one = NULL;
+	listint_t *two = NULL, *three = NULL, *four = NULL;
 
-	if (!list || !(*list) || (!((*list)->prev) && !((*list)->next)))
+	if (!list || !(*list) || len_list(*list) < 2)
 		return;
 
-	head = *list;
-	while (head && head->next)
+	curr = *list;
+
+	while (curr)
 	{
-		if (head->n > head->next->n)
+		if (curr->prev && curr->n < curr->prev->n)
 		{
-			aux = head;
+			one = curr->prev->prev;
+			two = curr->prev;
+			three = curr;
+			four = curr->next;
 
-			_swap(&aux, list);
+			two->next = four;
+			if (four)
+				four->prev = two;
+			three->next = two;
+			three->prev = one;
+			if (one)
+				one->next = three;
+			else
+				*list = three;
+			two->prev = three;
+			curr = *list;
 			print_list(*list);
-			head = aux;
-			tback = aux;
-
-			while (tback && tback->prev)
-			{
-
-				if (tback->n < tback->prev->n)
-				{
-					aux = tback->prev;
-
-					_swap(&(aux), list);
-
-					print_list(*list);
-					tback = aux->next;
-				}
-
-				tback = tback->prev;
-			}
-
+			continue;
 		}
-		head = head->next;
+		else
+			curr = curr->next;
 	}
 }
