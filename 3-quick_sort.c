@@ -1,75 +1,76 @@
 #include "sort.h"
 
 /**
- * quick_sort - sorts an array with the Quicksort algorithm
- * @array: array of ints to sort
- * @size: size of the array
- */
-void quick_sort(int *array, size_t size)
+* partition - Lomutu partition scheme for quicksort algorithm
+* @a: Array to sort
+* @l: lowest index of array
+* @h: highest index of array
+* Return: index of pivot
+*/
+
+int partition(int *a, int l, int h)
 {
-	if (size < 2)
-		return;
+	int p, i, j, t;
+	static int size, k;
 
-	quick_recursion(array, 0, (int)size - 1, size);
-}
-
-/**
- * quick_recursion - helper function for Quicksort
- * @array: array to sort
- * @left: index of the left element
- * @right: index of the right element
- * @size: size of the array
- */
-void quick_recursion(int *array, int left, int right, size_t size)
-{
-	int piv;
-
-	if (left < right)
+	if (k == 0)
+		size = h + 1, k++;
+	p = a[h];
+	i = l;
+	for (j = l; j < h; j++)
 	{
-		piv = partition(array, left, right, size);
-		quick_recursion(array, left, piv - 1, size);
-		quick_recursion(array, piv + 1, right, size);
-	}
-}
-
-/**
- * partition - gives a piv index for Quicksort
- * @array: array to find the piv in
- * @left: index of the left element
- * @right: index of the right element
- * @size: size of the array
- *
- * Return: the index of the piv element
- */
-int partition(int *array, int left, int right, size_t size)
-{
-	int tmp, i;
-	int j;
-
-	i = left - 1;
-
-	for (j = left; j < right; j++)
-	{
-		if (array[j] < array[right])
+		if (a[j] <= p)
 		{
-			i++;
 			if (i != j)
 			{
-				tmp = array[i];
-				array[i] = array[j];
-				array[j] = tmp;
-				print_array(array, size);
+				t = a[i];
+				a[i] = a[j];
+				a[j] = t;
+				print_array(a, size);
 			}
+			i++;
 		}
 	}
-
-	if (array[right] < array[i + 1])
+	if (i != h)
 	{
-		tmp = array[i + 1];
-		array[i + 1] = array[right];
-		array[right] = tmp;
-		print_array(array, size);
+		t = a[i];
+		a[i] = a[h];
+		a[h] = t;
+		print_array(a, size);
 	}
 
-	return (i + 1);
+	return (i);
+}
+
+/**
+* qs - Quicksort recurssive function
+* @a: array to sort
+* @l: lowest index
+* @h: highest index
+*/
+
+void qs(int *a, int l, int h)
+{
+	int p;
+
+	if (l < h)
+	{
+		p = partition(a, l, h);
+		qs(a, l, p - 1);
+		qs(a, p + 1, h);
+	}
+}
+
+
+/**
+* quick_sort - sorts array using quicksort algorithm
+* @array: Array to sort
+* @size: Size of array to sort
+*/
+
+void quick_sort(int *array, size_t size)
+{
+	if (array == NULL)
+		return;
+	qs(array, 0, size - 1);
 }
