@@ -73,3 +73,4 @@ void bitonic_merge(int *array, int l, int r, int direction)
 	}
 
 }
+
